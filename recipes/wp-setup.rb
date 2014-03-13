@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+require 'shellwords'
+
 template File.join(Chef::Config[:file_cache_path], 'wordpress-cli-installer.sh') do
   source 'wordpress-cli-installer.sh'
   owner 'root'
@@ -39,5 +41,5 @@ execute "configure_wordpress_#{node['rax']['apache']['domain']}" do
   not_if "mysql -h #{node['wordpress']['db']['host']} \
   -u #{node['wordpress']['db']['user']} \
   -e \"select * from #{node['wordpress']['db']['name']}.#{node['wordpress']['db']['prefix']}options where option_name = 'siteurl';\" \
-  -p#{node['wordpress']['db']['pass']}"
+  -p#{node['wordpress']['db']['pass'].shellescape}"
 end
